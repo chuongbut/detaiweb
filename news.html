@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <title>GameZone - Tin Tức Công Nghệ & Game</title>
+    <link rel="stylesheet" href="style.css">
+    <style>
+        .news-grid-page {
+            display: flex;
+            flex-direction: column;
+            gap: 30px;
+            margin-top: 30px;
+        }
+        .news-item-card {
+            display: flex;
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            overflow: hidden;
+            transition: border-color 0.3s;
+        }
+        .news-item-card:hover {
+            border-color: var(--primary);
+        }
+        .news-item-img {
+            width: 300px;
+            height: 200px;
+            object-fit: cover;
+        }
+        .news-item-body {
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+        .news-item-date {
+            font-size: 13px;
+            color: var(--text-muted);
+            margin-bottom: 5px;
+        }
+        .news-item-title {
+            font-size: 18px;
+            font-weight: bold;
+            margin-bottom: 10px;
+        }
+        .news-item-summary {
+            color: #ccc;
+            font-size: 14px;
+            display: -webkit-box;
+            -webkit-line-clamp: 3;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+        }
+        @media (max-width: 768px) {
+            .news-item-card { flex-direction: column; }
+            .news-item-img { width: 100%; height: 200px; }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="container">
+            <div class="top-bar">
+                <div class="logo"><a href="index.html">GAME<span>ZONE</span></a></div>
+                <div class="header-actions">
+                    <a href="cart.html" class="cart-status">Giỏ hàng <span class="count" id="global-cart-count">0</span></a>
+                </div>
+            </div>
+            <div class="main-nav">
+                <ul class="nav-links">
+                    <li><a href="index.html">Trang chủ</a></li>
+                    <li><a href="shop.html">Cửa hàng (Danh mục)</a></li>
+                    <li><a href="news.html" class="active">Tin tức</a></li>
+                </ul>
+            </div>
+        </div>
+    </header>
+
+    <main class="container">
+        <div class="section-title"><h2>📰 TIN TỨC GAME MỚI NHẤT</h2></div>
+        <div class="news-grid-page" id="news-container"></div>
+    </main>
+
+    <script src="database.js"></script>
+    <script src="news-database.js"></script>
+    <script>
+        const container = document.getElementById('news-container');
+        newsDatabase.forEach(item => {
+            container.innerHTML += `
+                <div class="news-item-card">
+                    <img class="news-item-img" src="${item.img}" alt="${item.title}">
+                    <div class="news-item-body">
+                        <div class="news-item-date">📅 Cập nhật ngày: ${item.date}</div>
+                        <div class="news-item-title">${item.title}</div>
+                        <div class="news-item-summary">${item.summary}</div>
+                    </div>
+                </div>
+            `;
+        });
+        updateGlobalCartCount();
+    </script>
+</body>
+</html>

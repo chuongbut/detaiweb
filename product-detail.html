@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <title>GameZone - Chi Tiết Sản Phẩm</title>
+    <link rel="stylesheet" href="style.css">
+    <style>
+        .detail-layout { display: flex; gap: 40px; padding: 40px 0; }
+        .detail-left { flex: 1; }
+        .detail-left img { width: 100%; border-radius: 8px; border: 1px solid #232a38; }
+        .detail-right { flex: 1.5; display: flex; flex-direction: column; gap: 15px; }
+        .detail-price { font-size: 32px; color: #00ff66; font-weight: bold; }
+        .btn-add-cart { background-color: #ff4655; color: white; border: none; padding: 15px 30px; font-size: 18px; font-weight: bold; border-radius: 4px; cursor: pointer; align-self: flex-start; }
+        .game-spec { background-color: #151922; padding: 20px; border-radius: 6px; border: 1px solid #232a38; margin-top: 20px; }
+        .game-spec h3 { margin-bottom: 10px; color: #ff4655; }
+        .game-spec p { font-size: 14px; color: #ccc; margin-bottom: 4px; }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="container">
+            <div class="top-bar">
+                <div class="logo"><a href="index.html">GAME<span>ZONE</span></a></div>
+                <div class="header-actions"><a href="cart.html" class="cart-status">Giỏ hàng <span class="count" id="global-cart-count">0</span></a></div>
+            </div>
+            <div class="main-nav">
+                <ul class="nav-links">
+                    <li><a href="index.html">Trang chủ</a></li>
+                    <li><a href="shop.html">Cửa hàng (Danh mục)</a></li>
+                    <li><a href="news.html">Tin tức</a></li>
+                </ul>
+            </div>
+        </div>
+    </header>
+
+    <main class="container" id="detail-target"></main>
+
+    <script src="database.js"></script>
+    <script>
+        const targetId = parseInt(localStorage.getItem('targetGameId'));
+        const game = gamesDatabase.find(g => g.id === targetId);
+        const area = document.getElementById('detail-target');
+
+        if(!game) {
+            area.innerHTML = "<h2>Không tìm thấy dữ liệu game!</h2>";
+        } else {
+            area.innerHTML = `
+                <div class="detail-layout">
+                    <div class="detail-left"><img src="${game.img}"></div>
+                    <div class="detail-right">
+                        <span style="color:#ff4655; font-weight:bold;">Nền tảng: PC (${game.tag})</span>
+                        <h2>${game.name}</h2>
+                        <div class="detail-price">${game.price.toLocaleString('vi-VN')}đ</div>
+                        <button class="btn-add-cart" onclick="addCurrentToCart()">THÊM VÀO GIỎ HÀNG</button>
+                        <div class="game-spec">
+                            <h3>🖥️ Cấu hình tối thiểu</h3>
+                            <p>• Hệ điều hành: ${game.os}</p>
+                            <p>• Bộ vi xử lý: ${game.cpu}</p>
+                            <p>• RAM: ${game.ram}</p>
+                            <p>• Card màn hình: ${game.gpu}</p>
+                        </div>
+                    </div>
+                </div>`;
+        }
+
+        function addCurrentToCart() {
+            let cart = JSON.parse(localStorage.getItem('mainCart')) || [];
+            const exist = cart.find(item => item.id === game.id);
+            if(exist) exist.quantity += 1;
+            else cart.push({...game, quantity: 1});
+            localStorage.setItem('mainCart', JSON.stringify(cart));
+            alert('Đã thêm sản phẩm vào giỏ!');
+            updateGlobalCartCount();
+        }
+        updateGlobalCartCount();
+    </script>
+</body>
+</html>

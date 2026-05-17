@@ -1,0 +1,217 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <title>GameZone - Giỏ Hàng</title>
+    <link rel="stylesheet" href="style.css">
+    <style>
+        .cart-table { width: 100%; border-collapse: collapse; margin: 30px 0; }
+        .cart-table th, .cart-table td { padding: 15px; text-align: left; border-bottom: 1px solid #232a38; }
+        .cart-table th { background-color: #151922; color: #ff4655; }
+        .qty-btn { padding: 2px 8px; background-color: #232a38; border: 1px solid #343f54; color: white; cursor: pointer; }
+        .cart-summary { background-color: #151922; padding: 25px; border-radius: 6px; border: 1px solid #232a38; max-width: 400px; margin-left: auto; text-align: right; }
+        .checkout-btn { background-color: #00ff66; color: #000; border: none; padding: 12px 25px; font-weight: bold; width: 100%; border-radius: 4px; cursor: pointer; text-transform: uppercase; margin-top: 15px; }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="container">
+            <div class="top-bar">
+                <div class="logo"><a href="index.html">GAME<span>ZONE</span></a></div>
+                <div class="header-actions"><a href="cart.html" class="cart-status">Giỏ hàng <span class="count" id="global-cart-count">0</span></a></div>
+            </div>
+            <div class="main-nav">
+                <ul class="nav-links">
+                    <li><a href="index.html">Trang chủ</a></li>
+                    <li><a href="shop.html">Cửa hàng (Danh mục)</a></li>
+                    <li><a href="news.html">Tin tức</a></li>
+                </ul>
+            </div>
+        </div>
+    </header>
+
+    <main class="container">
+        <div class="section-title"><h2>Giỏ Hàng Của Bạn</h2></div>
+        <table class="cart-table">
+            <thead>
+                <tr>
+                    <th>Sản phẩm</th>
+                    <th>Nền tảng</th>
+                    <th>Giá</th>
+                    <th>Số lượng</th>
+                    <th>Xóa</th>
+                </tr>
+            </thead>
+            <tbody id="cart-tbody"></tbody>
+        </table>
+        <div class="cart-summary">
+            <h3>Tổng cộng: <span style="color:#00ff66;" id="total-text">0đ</span></h3>
+            <button class="checkout-btn" onclick="checkout()">Thanh Toán Ngay</button>
+        </div>
+    </main>
+
+    <script src="database.js"></script>
+    <script>
+        function renderCart() {
+            let cart = JSON.parse(localStorage.getItem('mainCart')) || [];
+            const tbody = document.getElementById('cart-tbody');
+            const totalText = document.getElementById('total-text');
+            tbody.innerHTML = '';
+            let sumMoney = 0;
+
+            if(cart.length === 0) {
+                tbody.innerHTML = `<tr><td colspan="5" style="text-align:center; color:#888;">Giỏ hàng trống rỗng!</td></tr>`;
+            } else {
+                cart.forEach((item, index) => {
+                    sumMoney += (item.price * item.quantity);
+                    tbody.innerHTML += `
+                        <tr>
+                            <td><strong>${item.name}</strong></td>
+                            <td>${item.tag}</td>
+                            <td style="color:#00ff66;">${item.price.toLocaleString('vi-VN')}đ</td>
+                            <td>
+                                <button class="qty-btn" onclick="changeVolume(${index}, -1)">-</button>
+                                <span style="margin:0 8px;">${item.quantity}</span>
+                                <button class="qty-btn" onclick="changeVolume(${index}, 1)">+</button>
+                            </td>
+                            <td><button onclick="deleteItem(${index})" style="color:#ff4655; background:none; border:none; cursor:pointer;">Xóa</button></td>
+                        </tr>`;
+                });
+            }
+            totalText.innerText = sumMoney.toLocaleString('vi-VN') + 'đ';
+            updateGlobalCartCount();
+        }
+
+        function changeVolume(index, offset) {
+            let cart = JSON.parse(localStorage.getItem('mainCart')) || [];
+            cart[index].quantity += offset;
+            if(cart[index].quantity <= 0) cart.splice(index, 1);
+            localStorage.setItem('mainCart', JSON.stringify(cart));
+            renderCart();
+        }
+
+        function deleteItem(index) {
+            let cart = JSON.parse(localStorage.getItem('mainCart')) || [];
+            cart.splice(index, 1);
+            localStorage.setItem('mainCart', JSON.stringify(cart));
+            renderCart();
+        }
+
+        function checkout() {
+            alert('Đặt hàng thành công! Key game bản quyền tự động đã được gửi về email của bạn.');
+            localStorage.setItem('mainCart', JSON.stringify([]));
+            window.location.href = 'index.html';
+        }
+
+        renderCart();
+    </script>
+</body>
+</html><!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <title>GameZone - Giỏ Hàng</title>
+    <link rel="stylesheet" href="style.css">
+    <style>
+        .cart-table { width: 100%; border-collapse: collapse; margin: 30px 0; }
+        .cart-table th, .cart-table td { padding: 15px; text-align: left; border-bottom: 1px solid #232a38; }
+        .cart-table th { background-color: #151922; color: #ff4655; }
+        .qty-btn { padding: 2px 8px; background-color: #232a38; border: 1px solid #343f54; color: white; cursor: pointer; }
+        .cart-summary { background-color: #151922; padding: 25px; border-radius: 6px; border: 1px solid #232a38; max-width: 400px; margin-left: auto; text-align: right; }
+        .checkout-btn { background-color: #00ff66; color: #000; border: none; padding: 12px 25px; font-weight: bold; width: 100%; border-radius: 4px; cursor: pointer; text-transform: uppercase; margin-top: 15px; }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="container">
+            <div class="top-bar">
+                <div class="logo"><a href="index.html">GAME<span>ZONE</span></a></div>
+                <div class="header-actions"><a href="cart.html" class="cart-status">Giỏ hàng <span class="count" id="global-cart-count">0</span></a></div>
+            </div>
+            <div class="main-nav">
+                <ul class="nav-links">
+                    <li><a href="index.html">Trang chủ</a></li>
+                    <li><a href="shop.html">Cửa hàng (Danh mục)</a></li>
+                    <li><a href="news.html">Tin tức</a></li>
+                </ul>
+            </div>
+        </div>
+    </header>
+
+    <main class="container">
+        <div class="section-title"><h2>Giỏ Hàng Của Bạn</h2></div>
+        <table class="cart-table">
+            <thead>
+                <tr>
+                    <th>Sản phẩm</th>
+                    <th>Nền tảng</th>
+                    <th>Giá</th>
+                    <th>Số lượng</th>
+                    <th>Xóa</th>
+                </tr>
+            </thead>
+            <tbody id="cart-tbody"></tbody>
+        </table>
+        <div class="cart-summary">
+            <h3>Tổng cộng: <span style="color:#00ff66;" id="total-text">0đ</span></h3>
+            <button class="checkout-btn" onclick="checkout()">Thanh Toán Ngay</button>
+        </div>
+    </main>
+
+    <script src="database.js"></script>
+    <script>
+        function renderCart() {
+            let cart = JSON.parse(localStorage.getItem('mainCart')) || [];
+            const tbody = document.getElementById('cart-tbody');
+            const totalText = document.getElementById('total-text');
+            tbody.innerHTML = '';
+            let sumMoney = 0;
+
+            if(cart.length === 0) {
+                tbody.innerHTML = `<tr><td colspan="5" style="text-align:center; color:#888;">Giỏ hàng trống rỗng!</td></tr>`;
+            } else {
+                cart.forEach((item, index) => {
+                    sumMoney += (item.price * item.quantity);
+                    tbody.innerHTML += `
+                        <tr>
+                            <td><strong>${item.name}</strong></td>
+                            <td>${item.tag}</td>
+                            <td style="color:#00ff66;">${item.price.toLocaleString('vi-VN')}đ</td>
+                            <td>
+                                <button class="qty-btn" onclick="changeVolume(${index}, -1)">-</button>
+                                <span style="margin:0 8px;">${item.quantity}</span>
+                                <button class="qty-btn" onclick="changeVolume(${index}, 1)">+</button>
+                            </td>
+                            <td><button onclick="deleteItem(${index})" style="color:#ff4655; background:none; border:none; cursor:pointer;">Xóa</button></td>
+                        </tr>`;
+                });
+            }
+            totalText.innerText = sumMoney.toLocaleString('vi-VN') + 'đ';
+            updateGlobalCartCount();
+        }
+
+        function changeVolume(index, offset) {
+            let cart = JSON.parse(localStorage.getItem('mainCart')) || [];
+            cart[index].quantity += offset;
+            if(cart[index].quantity <= 0) cart.splice(index, 1);
+            localStorage.setItem('mainCart', JSON.stringify(cart));
+            renderCart();
+        }
+
+        function deleteItem(index) {
+            let cart = JSON.parse(localStorage.getItem('mainCart')) || [];
+            cart.splice(index, 1);
+            localStorage.setItem('mainCart', JSON.stringify(cart));
+            renderCart();
+        }
+
+        function checkout() {
+            alert('Đặt hàng thành công! Key game bản quyền tự động đã được gửi về email của bạn.');
+            localStorage.setItem('mainCart', JSON.stringify([]));
+            window.location.href = 'index.html';
+        }
+
+        renderCart();
+    </script>
+</body>
+</html>

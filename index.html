@@ -1,1 +1,71 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <title>GameZone - Trang Chủ</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <header>
+        <div class="container">
+            <div class="top-bar">
+                <div class="logo"><a href="index.html">GAME<span>ZONE</span></a></div>
+                <div class="search-bar"><input type="text" placeholder="Tìm kiếm..."><button>Tìm</button></div>
+                <div class="header-actions">
+                    <a href="cart.html" class="cart-status">Giỏ hàng <span class="count" id="global-cart-count">0</span></a>
+                </div>
+            </div>
+            <div class="main-nav">
+                <ul class="nav-links">
+                    <li><a href="index.html" class="active">Trang chủ</a></li>
+                    <li><a href="shop.html">Cửa hàng (Danh mục)</a></li>
+                    <li><a href="news.html">Tin tức</a></li>
+                </ul>
+            </div>
+        </div>
+    </header>
 
+    <main class="container">
+        <div class="section-title"><h2>🔥 GAME BÁN CHẠY NHẤT</h2></div>
+        <div class="product-grid" id="featured-grid"></div>
+    </main>
+
+    <script src="database.js"></script>
+    <script>
+        const featuredGrid = document.getElementById('featured-grid');
+        gamesDatabase.slice(0, 4).forEach(game => {
+            featuredGrid.innerHTML += `
+                <div class="product-card">
+                    <div class="product-img-box" onclick="goToDetail(${game.id})">
+                        <img class="product-img" src="${game.img}">
+                    </div>
+                    <div class="product-info">
+                        <span class="product-tag">${game.tag}</span>
+                        <div class="product-name" onclick="goToDetail(${game.id})">${game.name}</div>
+                        <div style="display:flex; justify-content:space-between; align-items:center; margin-top:auto;">
+                            <span class="price">${game.price.toLocaleString('vi-VN')}đ</span>
+                            <button class="buy-btn" onclick="addToCart(${game.id})">Mua</button>
+                        </div>
+                    </div>
+                </div>`;
+        });
+
+        function goToDetail(id) {
+            localStorage.setItem('targetGameId', id);
+            window.location.href = 'product-detail.html';
+        }
+
+        function addToCart(id) {
+            let cart = JSON.parse(localStorage.getItem('mainCart')) || [];
+            const game = gamesDatabase.find(g => g.id === id);
+            const exist = cart.find(item => item.id === id);
+            if(exist) exist.quantity += 1;
+            else cart.push({...game, quantity: 1});
+            localStorage.setItem('mainCart', JSON.stringify(cart));
+            alert('Đã thêm game vào giỏ hàng!');
+            updateGlobalCartCount();
+        }
+        updateGlobalCartCount();
+    </script>
+</body>
+</html>
